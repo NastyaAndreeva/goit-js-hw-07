@@ -21,18 +21,16 @@ function createImageElements(galleryItems) {
 
 function onImageClick(event) {
     event.preventDefault();
-    const newSrc = galleryItems.find(el => el.preview === event.target.src).original;
     instance = basicLightbox.create(`
       <img
         class="gallery__image"
-        src="${newSrc}"
-        data-source="${newSrc}"
+        src="${event.target.dataset.source}"
       />
 `, {
-    onShow: (instance) => {
+    onShow: () => {
         window.addEventListener('keydown', onModalKeydown);
     },
-    onClose: (instance) => {
+    onClose: () => {
       window.removeEventListener('keydown', onModalKeydown);
     }
 })
