@@ -2,9 +2,7 @@ import { galleryItems } from './gallery-items.js';
 // Change code below this line
 
 const gallery = document.querySelector('.gallery');
-
-// gallery.style.cursor = 'default';
-
+let instance = null;
 
 function createImageElements(galleryItems) {
     return galleryItems.map(el => {
@@ -24,31 +22,18 @@ function createImageElements(galleryItems) {
 function onImageClick(event) {
     event.preventDefault();
     const newSrc = galleryItems.find(el => el.preview === event.target.src).original;
-    const instance = basicLightbox.create(`
-    <div class="gallery__item">
-    <a class="gallery__link" href="${newSrc}">
+    instance = basicLightbox.create(`
       <img
         class="gallery__image"
         src="${newSrc}"
         data-source="${newSrc}"
       />
-  </a>
-  </div>
 `, {
     onShow: (instance) => {
-      const link = instance.element().querySelector('.gallery__link');
-      link.style.cursor = 'default';
-      link.addEventListener('click', event => {
-        event.preventDefault();
-      })
-      
-      link.onclick = instance.close;
-      window.addEventListener('keydown', function(event) {
-        if (event.code === 'Escape') {
-          instance.close();
-          }
-      });
-        
+        window.addEventListener('keydown', onModalKeydown);
+    },
+    onClose: (instance) => {
+      window.removeEventListener('keydown', onModalKeydown);
     }
 })
 
@@ -58,6 +43,14 @@ instance.show();
 gallery.insertAdjacentHTML('beforeend', createImageElements(galleryItems));
 
 gallery.addEventListener('click', onImageClick);
+
+function onModalKeydown (event) {
+  console.log(event);
+  if (event.code === 'Escape') {
+    instance.close();
+    }
+}
+
 
 
 
